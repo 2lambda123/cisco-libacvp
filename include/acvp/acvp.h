@@ -209,6 +209,7 @@ typedef enum acvp_cipher {
     ACVP_ECDSA_KEYVER,
     ACVP_ECDSA_SIGGEN,
     ACVP_ECDSA_SIGVER,
+    ACVP_DET_ECDSA_SIGGEN,
     ACVP_KDF135_SNMP,
     ACVP_KDF135_SSH,
     ACVP_KDF135_SRTP,
@@ -357,7 +358,8 @@ typedef enum acvp_alg_type_ecdsa {
     ACVP_SUB_ECDSA_KEYGEN = ACVP_ECDSA_KEYGEN,
     ACVP_SUB_ECDSA_KEYVER,
     ACVP_SUB_ECDSA_SIGGEN,
-    ACVP_SUB_ECDSA_SIGVER
+    ACVP_SUB_ECDSA_SIGVER,
+    ACVP_SUB_DET_ECDSA_SIGGEN
 } ACVP_SUB_ECDSA;
 
 /** @enum ACVP_SUB_DRBG */
@@ -453,8 +455,10 @@ typedef enum acvp_conformance_t {
  */
 typedef enum acvp_revision_t {
     ACVP_REVISION_DEFAULT = 0,
+    ACVP_REVISION_1_0,
     ACVP_REVISION_SP800_56CR1,
     ACVP_REVISION_SP800_56AR3,
+    ACVP_REVISION_FIPS186_4,
     ACVP_REVISION_MAX
 } ACVP_REVISION;
 
@@ -475,7 +479,9 @@ typedef enum acvp_hash_alg {
     ACVP_SHA3_256 = 256,
     ACVP_SHA3_384 = 512,
     ACVP_SHA3_512 = 1024,
-    ACVP_HASH_ALG_MAX = 2048
+    ACVP_SHAKE_128 = 2048,
+    ACVP_SHAKE_256 = 4096,
+    ACVP_HASH_ALG_MAX = 8192
 } ACVP_HASH_ALG;
 
 /**
@@ -684,9 +690,11 @@ typedef enum acvp_drbg_param {
 typedef enum acvp_rsa_param {
     ACVP_RSA_PARM_PUB_EXP_MODE = 1,
     ACVP_RSA_PARM_FIXED_PUB_EXP_VAL,
-    ACVP_RSA_PARM_KEY_FORMAT_CRT,
+    ACVP_RSA_PARM_KEY_FORMAT,
     ACVP_RSA_PARM_RAND_PQ,
     ACVP_RSA_PARM_INFO_GEN_BY_SERVER,
+    ACVP_RSA_PARM_REVISION,
+    ACVP_RSA_PARM_MODULO
 } ACVP_RSA_PARM;
 
 /** @enum ACVP_RSA_PRIME_PARAM */
@@ -700,7 +708,8 @@ typedef enum acvp_ecdsa_param {
     ACVP_ECDSA_CURVE,
     ACVP_ECDSA_SECRET_GEN,
     ACVP_ECDSA_HASH_ALG,
-    ACVP_ECDSA_COMPONENT_TEST
+    ACVP_ECDSA_COMPONENT_TEST,
+    ACVP_ECDSA_REVISION
 } ACVP_ECDSA_PARM;
 
 /** @enum ACVP_ECDSA_SECRET_GEN_MODE */
@@ -901,6 +910,7 @@ typedef enum acvp_rsa_prim_keyformat {
 typedef struct acvp_rsa_prim_tc_t {
     unsigned int tc_id;    /**< Test case id */
     unsigned char *cipher;
+    ACVP_RSA_PUB_EXP_MODE pub_exp_mode;
     int cipher_len;
     unsigned char *msg;
     int msg_len;
@@ -911,7 +921,7 @@ typedef struct acvp_rsa_prim_tc_t {
     int modulo;
     unsigned int fail;
     unsigned int pass;
-    int key_format;
+    ACVP_RSA_KEY_FORMAT key_format;
     unsigned char *n;
     unsigned char *e;
     unsigned char *d;
@@ -3313,10 +3323,12 @@ ACVP_RESULT acvp_cap_rsa_keygen_set_mode(ACVP_CTX *ctx,
                                          ACVP_RSA_KEYGEN_MODE value);
 
 ACVP_RESULT acvp_cap_rsa_prim_set_parm(ACVP_CTX *ctx,
-                                       ACVP_RSA_PARM prim_type,
+                                       ACVP_CIPHER cipher,
+                                       ACVP_RSA_PARM param,
                                        int value);
 
 ACVP_RESULT acvp_cap_rsa_prim_set_exponent(ACVP_CTX *ctx,
+                                           ACVP_CIPHER cipher,
                                            ACVP_RSA_PARM param,
                                            char *value);
 
