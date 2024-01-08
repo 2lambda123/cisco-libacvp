@@ -76,9 +76,9 @@ void acvp_log_msg(ACVP_CTX *ctx, ACVP_LOG_LVL level, const char *func, int line,
  * the app handler to deal with it instead of making assumptions about output
  */
 void acvp_log_newline(ACVP_CTX *ctx) {
-     char tmp[] = "\n";
-     ctx->test_progress_cb(tmp, ACVP_LOG_LVL_STATUS);
- }
+    char tmp[] = "\n";
+    ctx->test_progress_cb(tmp, ACVP_LOG_LVL_STATUS);
+}
 
 /*!
  *
@@ -159,7 +159,7 @@ const char *acvp_lookup_cipher_name(ACVP_CIPHER alg) {
  *        If the mode is given, then it will also use that to
  *        narrow down the search to entries that only match
  *        both the \p alg and \p mode.
- * 
+ *
  *        Note that this should not be used when the user registers an alternative revision for a
  *        cipher.
  *
@@ -265,7 +265,7 @@ ACVP_CIPHER acvp_lookup_cipher_index(const char *algorithm) {
  * @return 0 if no-match
  */
 ACVP_CIPHER acvp_lookup_cipher_w_mode_index(const char *algorithm,
-                                            const char *mode) {
+        const char *mode) {
     int i = 0;
 
     if (!algorithm || !mode) {
@@ -424,7 +424,12 @@ ACVP_DRBG_MODE acvp_lookup_drbg_mode_index(const char *mode) {
 /* This function checks to see if the value is a valid
    true / false param */
 ACVP_RESULT is_valid_tf_param(int value) {
-    if (value == 0 || value == 1) { return ACVP_SUCCESS; } else { return ACVP_INVALID_ARG; }
+    if (value == 0 || value == 1) {
+        return ACVP_SUCCESS;
+    }
+    else {
+        return ACVP_INVALID_ARG;
+    }
 }
 
 #define HASH_ALG_NAME_MAX 12
@@ -514,7 +519,9 @@ const char *acvp_lookup_rsa_prime_test_name(ACVP_RSA_PRIME_TEST_TYPE type) {
 ACVP_RESULT is_valid_prime_test(const char *value) {
     int diff = 0;
 
-    if (!value) { return ACVP_INVALID_ARG; }
+    if (!value) {
+        return ACVP_INVALID_ARG;
+    }
 
     strcmp_s(ACVP_RSA_PRIME_TEST_TBLC2_STR, 5, value, &diff);
     if (!diff) return ACVP_SUCCESS;
@@ -528,10 +535,12 @@ ACVP_RESULT is_valid_prime_test(const char *value) {
 /* This function checks to see if the value is a valid prime test (RSA) */
 ACVP_RESULT is_valid_rsa_mod(int value) {
     if (value != 2048 &&
-        value != 3072 &&
-        value != 4096) {
+            value != 3072 &&
+            value != 4096) {
         return ACVP_INVALID_ARG;
-    } else { return ACVP_SUCCESS; }
+    } else {
+        return ACVP_SUCCESS;
+    }
 }
 
 #define EC_CURVE_NAME_MAX 5
@@ -660,7 +669,7 @@ const char* acvp_lookup_aux_function_alg_str(ACVP_CIPHER alg) {
 ACVP_CIPHER acvp_lookup_aux_function_alg_tbl(const char *str) {
     int diff = 1, i = 0;
     for (i = 0; i < acvp_aux_function_tbl_len; i++) {
-    strcmp_s(acvp_aux_function_tbl[i].name, strnlen_s(acvp_aux_function_tbl[i].name, ACVP_ALG_NAME_MAX), str, &diff);
+        strcmp_s(acvp_aux_function_tbl[i].name, strnlen_s(acvp_aux_function_tbl[i].name, ACVP_ALG_NAME_MAX), str, &diff);
         if (!diff) {
             return acvp_aux_function_tbl[i].cipher;
         }
@@ -1123,7 +1132,7 @@ ACVP_RESULT acvp_setup_json_rsp_group(ACVP_CTX **ctx,
     *r_vs = json_value_get_object(*r_vs_val);
     if (!*r_vs) {
         return ACVP_JSON_ERR;
-    } 
+    }
 
     if (json_object_set_number(*r_vs, "vsId", (*ctx)->vs_id) != JSONSuccess ||
             json_object_set_string(*r_vs, "algorithm", alg_str) != JSONSuccess) {
@@ -1191,7 +1200,7 @@ void acvp_release_json(JSON_Value *r_vs_val,
  *
  * @return 1 Length of \string <= \p max_allowed
  * @return 0 Length of \string > \p max_allowed
- * 
+ *
  */
 int string_fits(const char *string, unsigned int max_allowed) {
     if (strnlen_s(string, max_allowed + 1) > max_allowed) {
@@ -1232,7 +1241,7 @@ ACVP_RESULT acvp_append_sl_list(ACVP_SL_LIST **list, int length) {
     if (!list) {
         return ACVP_NO_DATA;
     }
-    
+
     if (*list == NULL) {
         *list = calloc(1, sizeof(ACVP_SL_LIST));
         if (!*list) {
@@ -1267,7 +1276,7 @@ ACVP_RESULT acvp_append_param_list(ACVP_PARAM_LIST **list, int param) {
     if (!list) {
         return ACVP_NO_DATA;
     }
-    
+
     if (*list == NULL) {
         *list = calloc(1, sizeof(ACVP_PARAM_LIST));
         if (!*list) {
@@ -1451,7 +1460,7 @@ int acvp_is_domain_already_set(ACVP_JSON_DOMAIN_OBJ *domain) {
 ACVP_RESULT acvp_json_serialize_to_file_pretty_a(const JSON_Value *value, const char *filename) {
     ACVP_RESULT return_code = ACVP_SUCCESS;
     FILE *fp = NULL;
-    char *serialized_string = NULL; 
+    char *serialized_string = NULL;
 
     if (!filename) {
         return ACVP_INVALID_ARG;

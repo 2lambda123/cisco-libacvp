@@ -70,7 +70,7 @@ base64_decode(const char *in, unsigned int inlen, unsigned char *out) {
             return j;
 
         if (in[i] < BASE64DE_FIRST || in[i] > BASE64DE_LAST ||
-            (c = base64de[in[i] - BASE64DE_FIRST]) == -1)
+                (c = base64de[in[i] - BASE64DE_FIRST]) == -1)
             return 0;
 
         switch (s) {
@@ -103,7 +103,7 @@ base64_decode(const char *in, unsigned int inlen, unsigned char *out) {
 }
 
 const int DIGITS_POWER[]
-    //  0  1   2    3     4      5       6        7         8
+//  0  1   2    3     4      5       6        7         8
     = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
 
 #define T_LEN 8
@@ -242,7 +242,7 @@ unsigned int swap_uint_endian(unsigned int i) {
     b = (i >> 8) & 0x0000ff00;
     c = (i << 8) & 0x00ff0000;
     d = (i << 24) & 0xff000000;
-	return (a | b | c | d);
+    return (a | b | c | d);
 }
 
 int check_is_little_endian() {
@@ -299,7 +299,7 @@ int save_string_to_file(const char *str, const char *path) {
     }
 
     rv = 0;
- end:
+end:
     if (fp && fclose(fp) == EOF) {
         printf("Encountered an error attempting to close output file. Cannot guarantee file integrity.\n");
     }
@@ -378,7 +378,7 @@ const EVP_MD *get_md_for_hash_alg(ACVP_HASH_ALG alg) {
     case ACVP_NO_SHA:
     case ACVP_HASH_ALG_MAX:
     default:
-       return NULL;
+        return NULL;
     }
 }
 
@@ -472,11 +472,13 @@ char *ec_point_to_pub_key(unsigned char *x, int x_len, unsigned char *y, int y_l
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
 
 static const unsigned char sanity_msg[] = { 0xA5, 0x30, 0xD4, 0x60, 0x93, 0xA3, 0x5E, 0x50, 0x2C, 0xA1, 0x64, 0xB7,
-                                            0x50, 0x24, 0xE4 };
+                                            0x50, 0x24, 0xE4
+                                          };
 
 static const unsigned char sanity_hash[] = { 0x13, 0x80, 0x22, 0xF7, 0xF3, 0xC6, 0xB9, 0x59, 0x36, 0x2D, 0xFE, 0xAE,
                                              0x59, 0xE9, 0xA3, 0x72, 0x24, 0x04, 0x3C, 0x61, 0x1E, 0xE4, 0xAA, 0x01,
-                                             0xF0, 0xAA, 0x04, 0x2A };
+                                             0xF0, 0xAA, 0x04, 0x2A
+                                           };
 
 /*
  * This performs a quick digest to make sure the FIPS provider is running properly. Othewise, we

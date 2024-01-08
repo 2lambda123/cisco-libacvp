@@ -52,9 +52,13 @@ static ACVP_RESULT acvp_lookup_prereqVals(JSON_Object *cap_obj, ACVP_CAPS_LIST *
     const char *alg_str;
     int i = 0;
 
-    if (!cap_entry) { return ACVP_INVALID_ARG; }
+    if (!cap_entry) {
+        return ACVP_INVALID_ARG;
+    }
 
-    if (!cap_entry->has_prereq) { return ACVP_SUCCESS; }
+    if (!cap_entry->has_prereq) {
+        return ACVP_SUCCESS;
+    }
     /*
      * Init json array
      */
@@ -120,7 +124,7 @@ static ACVP_RESULT acvp_build_hash_register_cap(JSON_Object *cap_obj, ACVP_CAPS_
     }
 
     if (cap_entry->cipher == ACVP_HASH_SHAKE_128 ||
-        cap_entry->cipher == ACVP_HASH_SHAKE_256) {
+            cap_entry->cipher == ACVP_HASH_SHAKE_256) {
         /* SHAKE specific capabilities */
         JSON_Array *tmp_arr = NULL;
         JSON_Value *tmp_val = NULL;
@@ -182,7 +186,9 @@ static ACVP_RESULT acvp_build_hmac_register_cap(JSON_Object *cap_obj, ACVP_CAPS_
     json_object_set_string(cap_obj, "revision", revision);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     /*
      * Set the supported key lengths
@@ -249,7 +255,9 @@ static ACVP_RESULT acvp_build_cmac_register_cap(JSON_Object *cap_obj, ACVP_CAPS_
     json_object_set_string(cap_obj, "revision", revision);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     capabilities_val = json_value_init_object();
     capabilities_obj = json_value_get_object(capabilities_val);
@@ -263,8 +271,12 @@ static ACVP_RESULT acvp_build_cmac_register_cap(JSON_Object *cap_obj, ACVP_CAPS_
         json_value_free(capabilities_val);
         return ACVP_MISSING_ARG;
     }
-    if (cap_entry->cap.cmac_cap->direction_gen) { json_array_append_string(temp_arr, "gen"); }
-    if (cap_entry->cap.cmac_cap->direction_ver) { json_array_append_string(temp_arr, "ver"); }
+    if (cap_entry->cap.cmac_cap->direction_gen) {
+        json_array_append_string(temp_arr, "gen");
+    }
+    if (cap_entry->cap.cmac_cap->direction_ver) {
+        json_array_append_string(temp_arr, "ver");
+    }
 
     json_object_set_value(capabilities_obj, "msgLen", json_value_init_array());
     temp_arr = json_object_get_array(capabilities_obj, "msgLen");
@@ -354,7 +366,9 @@ static ACVP_RESULT acvp_build_kmac_register_cap(JSON_Object *cap_obj, ACVP_CAPS_
     json_object_set_string(cap_obj, "revision", revision);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "xof", json_value_init_array());
     temp_arr = json_object_get_array(cap_obj, "xof");
@@ -456,7 +470,9 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
         return ACVP_MISSING_ARG;
     }
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     /*
      * If we have a non-default conformance, set the array
@@ -481,11 +497,11 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
     json_object_set_value(cap_obj, "direction", json_value_init_array());
     mode_arr = json_object_get_array(cap_obj, "direction");
     if (sym_cap->direction == ACVP_SYM_CIPH_DIR_ENCRYPT ||
-        sym_cap->direction == ACVP_SYM_CIPH_DIR_BOTH) {
+            sym_cap->direction == ACVP_SYM_CIPH_DIR_BOTH) {
         json_array_append_string(mode_arr, "encrypt");
     }
     if (sym_cap->direction == ACVP_SYM_CIPH_DIR_DECRYPT ||
-        sym_cap->direction == ACVP_SYM_CIPH_DIR_BOTH) {
+            sym_cap->direction == ACVP_SYM_CIPH_DIR_BOTH) {
         json_array_append_string(mode_arr, "decrypt");
     }
 
@@ -493,7 +509,7 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
      * Set the keywrap modes capability
      */
     if ((cap_entry->cipher == ACVP_AES_KW) || (cap_entry->cipher == ACVP_AES_KWP) ||
-        (cap_entry->cipher == ACVP_TDES_KW)) {
+            (cap_entry->cipher == ACVP_TDES_KW)) {
         json_object_set_value(cap_obj, "kwCipher", json_value_init_array());
         kwc_arr = json_object_get_array(cap_obj, "kwCipher");
         if (sym_cap->kw_mode & ACVP_SYM_KW_CIPHER) {
@@ -541,9 +557,9 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
         break;
     }
 
-        /*
-     * Set the salt generation source if applicable (XPN)
-     */
+    /*
+    * Set the salt generation source if applicable (XPN)
+    */
     switch (sym_cap->salt_source) {
     case ACVP_SYM_CIPH_SALT_SRC_INT:
         json_object_set_string(cap_obj, "saltGen", "internal");
@@ -582,12 +598,12 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
         json_object_set_value(cap_obj, "keyingOption", json_value_init_array());
         opts_arr = json_object_get_array(cap_obj, "keyingOption");
         if (sym_cap->keying_option == ACVP_SYM_CIPH_KO_THREE ||
-            sym_cap->keying_option == ACVP_SYM_CIPH_KO_ONE ||
-            sym_cap->keying_option == ACVP_SYM_CIPH_KO_BOTH) {
+                sym_cap->keying_option == ACVP_SYM_CIPH_KO_ONE ||
+                sym_cap->keying_option == ACVP_SYM_CIPH_KO_BOTH) {
             json_array_append_number(opts_arr, 1);
         }
         if (sym_cap->keying_option == ACVP_SYM_CIPH_KO_TWO ||
-            sym_cap->keying_option == ACVP_SYM_CIPH_KO_BOTH) {
+                sym_cap->keying_option == ACVP_SYM_CIPH_KO_BOTH) {
             json_array_append_number(opts_arr, 2);
         }
     }
@@ -604,7 +620,7 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
             sl_list = sl_list->next;
         }
     } else {
-        //If cipher is AES, we need keylengths. If TDES, we do not. 
+        //If cipher is AES, we need keylengths. If TDES, we do not.
         ACVP_SUB_AES checkAes = acvp_get_aes_alg(cap_entry->cipher);
         switch (checkAes) {
         case ACVP_SUB_AES_ECB:
@@ -635,7 +651,7 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
      * Set the supported tag lengths (for AEAD ciphers)
      */
     if ((cap_entry->cipher == ACVP_AES_GCM) || (cap_entry->cipher == ACVP_AES_CCM)
-          || (cap_entry->cipher == ACVP_AES_GMAC) || (cap_entry->cipher == ACVP_AES_XPN)) {
+            || (cap_entry->cipher == ACVP_AES_GMAC) || (cap_entry->cipher == ACVP_AES_XPN)) {
         json_object_set_value(cap_obj, "tagLen", json_value_init_array());
         opts_arr = json_object_get_array(cap_obj, "tagLen");
         sl_list = sym_cap->taglen;
@@ -789,7 +805,7 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
             sl_list = sl_list->next;
         }
     } else if (sym_cap->payload_len.min || sym_cap->payload_len.max ||
-                sym_cap->payload_len.increment) {
+               sym_cap->payload_len.increment) {
         json_object_set_value(cap_obj, "payloadLen", json_value_init_array());
         opts_arr = json_object_get_array(cap_obj, "payloadLen");
         tmp_val = json_value_init_object();
@@ -799,7 +815,7 @@ static ACVP_RESULT acvp_build_sym_cipher_register_cap(JSON_Object *cap_obj, ACVP
         json_object_set_number(tmp_obj, "increment", sym_cap->payload_len.increment);
         json_array_append_value(opts_arr, tmp_val);
     } else {
-        //For most AES ciphers, we need payload lengths. If TDES, we do not. 
+        //For most AES ciphers, we need payload lengths. If TDES, we do not.
         ACVP_SUB_AES checkAes = acvp_get_aes_alg(cap_entry->cipher);
         switch (checkAes) {
         case ACVP_SUB_AES_CBC_CS1:
@@ -958,7 +974,9 @@ static ACVP_RESULT acvp_build_drbg_register_cap(JSON_Object *cap_obj, ACVP_CAPS_
     json_object_set_string(cap_obj, "revision", revision);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "predResistanceEnabled", json_value_init_array());
     array = json_object_get_array(cap_obj, "predResistanceEnabled");
@@ -970,10 +988,12 @@ static ACVP_RESULT acvp_build_drbg_register_cap(JSON_Object *cap_obj, ACVP_CAPS_
 
     cap_mode_list = cap->drbg_cap_mode;
 
-     while(cap_mode_list) {
+    while(cap_mode_list) {
         cap_group_list = cap_mode_list->groups;
         mode_str = acvp_lookup_drbg_mode_string(cap_mode_list);
-        if (!mode_str) { return ACVP_INVALID_ARG; }
+        if (!mode_str) {
+            return ACVP_INVALID_ARG;
+        }
         while (cap_group_list) {
             cap_group = cap_group_list->group;
             if (!cap_group) {
@@ -1083,7 +1103,9 @@ static ACVP_RESULT acvp_lookup_rsa_primes(JSON_Object *cap_obj, ACVP_RSA_KEYGEN_
     ACVP_RSA_MODE_CAPS_LIST *current_mode_cap;
     ACVP_NAME_LIST *comp_name, *next_name;
 
-    if (!rsa_cap) { return ACVP_INVALID_ARG; }
+    if (!rsa_cap) {
+        return ACVP_INVALID_ARG;
+    }
 
     /*
      * return OK if nothing present
@@ -1150,7 +1172,9 @@ static ACVP_RESULT acvp_build_rsa_keygen_register_cap(JSON_Object *cap_obj, ACVP
     json_object_set_string(cap_obj, "mode", "keyGen");
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     /*
      * Iterate through list of RSA modes and create registration object
@@ -1219,7 +1243,9 @@ static ACVP_RESULT acvp_build_rsa_sig_register_cap(JSON_Object *cap_obj, ACVP_CA
             return ACVP_MISSING_ARG;
         }
         result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-        if (result != ACVP_SUCCESS) { return result; }
+        if (result != ACVP_SUCCESS) {
+            return result;
+        }
     } else if (cap_entry->cipher == ACVP_RSA_SIGVER) {
         json_object_set_string(cap_obj, "mode", "sigVer");
         rsa_cap_mode = cap_entry->cap.rsa_sigver_cap;
@@ -1227,7 +1253,9 @@ static ACVP_RESULT acvp_build_rsa_sig_register_cap(JSON_Object *cap_obj, ACVP_CA
             return ACVP_MISSING_ARG;
         }
         result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-        if (result != ACVP_SUCCESS) { return result; }
+        if (result != ACVP_SUCCESS) {
+            return result;
+        }
 
         json_object_set_string(cap_obj, "pubExpMode",
                                rsa_cap_mode->pub_exp_mode == ACVP_RSA_PUB_EXP_MODE_FIXED ?
@@ -1309,7 +1337,9 @@ static ACVP_RESULT acvp_build_rsa_prim_register_cap(JSON_Object *cap_obj, ACVP_C
         return ACVP_INVALID_ARG;
     }
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     ACVP_RSA_PRIM_CAP *prim_cap = cap_entry->cap.rsa_prim_cap;
     if (!prim_cap) {
@@ -1354,7 +1384,7 @@ static ACVP_RESULT acvp_build_rsa_prim_register_cap(JSON_Object *cap_obj, ACVP_C
         json_object_set_value(cap_obj, "pubExpMode", json_value_init_array());
         arr = json_object_get_array(cap_obj, "pubExpMode");
         json_array_append_string(arr, prim_cap->pub_exp_mode == ACVP_RSA_PUB_EXP_MODE_FIXED ?
-                               ACVP_RSA_PUB_EXP_MODE_FIXED_STR : ACVP_RSA_PUB_EXP_MODE_RANDOM_STR);
+                                 ACVP_RSA_PUB_EXP_MODE_FIXED_STR : ACVP_RSA_PUB_EXP_MODE_RANDOM_STR);
         if (prim_cap->pub_exp_mode == ACVP_RSA_PUB_EXP_MODE_FIXED) {
             json_object_set_string(cap_obj, "fixedPubExp", (const char *)prim_cap->fixed_pub_exp);
         }
@@ -1489,7 +1519,9 @@ static ACVP_RESULT acvp_build_ecdsa_register_cap(ACVP_CTX *ctx, ACVP_CIPHER ciph
     json_object_set_string(cap_obj, "revision", revision);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     if (!current_curve) {
         if (alg_caps_val) json_value_free(alg_caps_val);
@@ -1625,7 +1657,9 @@ static ACVP_RESULT acvp_build_kdf135_snmp_register_cap(JSON_Object *cap_obj, ACV
     json_object_set_string(cap_obj, "mode", ACVP_ALG_KDF135_SNMP);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "engineId", json_value_init_array());
     temp_arr = json_object_get_array(cap_obj, "engineId");
@@ -1722,7 +1756,9 @@ static ACVP_RESULT acvp_build_kdf108_register_cap(JSON_Object *cap_obj, ACVP_CAP
     json_object_set_string(cap_obj, "revision", revision);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "capabilities", json_value_init_array());
     alg_specs_array = json_object_get_array(cap_obj, "capabilities");
@@ -1774,7 +1810,9 @@ static ACVP_RESULT acvp_build_kdf108_kmac_register_cap(JSON_Object *cap_obj, ACV
     json_object_set_string(cap_obj, "revision", ACVP_REV_STR_SP800_108R1);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     params = &cap_entry->cap.kdf108_cap->kmac_mode;
 
@@ -1868,7 +1906,9 @@ static ACVP_RESULT acvp_build_kdf135_x942_register_cap(JSON_Object *cap_obj, ACV
     json_object_set_string(cap_obj, "mode", ACVP_ALG_KDF135_X942);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     cap = cap_entry->cap.kdf135_x942_cap;
 
@@ -1970,7 +2010,9 @@ static ACVP_RESULT acvp_build_kdf135_x963_register_cap(JSON_Object *cap_obj, ACV
     json_object_set_string(cap_obj, "mode", "ansix9.63");
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     /* Array of hash algs */
     json_object_set_value(cap_obj, "hashAlg", json_value_init_array());
@@ -2029,7 +2071,9 @@ static ACVP_RESULT acvp_build_kdf135_ikev2_register_cap(JSON_Object *cap_obj, AC
 
     json_object_set_string(cap_obj, "mode", ACVP_ALG_KDF135_IKEV2);
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "capabilities", json_value_init_array());
     alg_specs_array = json_object_get_array(cap_obj, "capabilities");
@@ -2142,7 +2186,9 @@ static ACVP_RESULT acvp_build_kdf135_ikev1_register_cap(JSON_Object *cap_obj, AC
 
     json_object_set_string(cap_obj, "mode", ACVP_ALG_KDF135_IKEV1);
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "capabilities", json_value_init_array());
     alg_specs_array = json_object_get_array(cap_obj, "capabilities");
@@ -2222,7 +2268,9 @@ static ACVP_RESULT acvp_build_kdf135_srtp_register_cap(JSON_Object *cap_obj, ACV
     json_object_set_string(cap_obj, "mode", ACVP_ALG_KDF135_SRTP);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "aesKeyLength", json_value_init_array());
     tmp_arr = json_object_get_array(cap_obj, "aesKeyLength");
@@ -2294,7 +2342,9 @@ static ACVP_RESULT acvp_build_kdf135_ssh_register_cap(JSON_Object *cap_obj, ACVP
     }
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     return ACVP_SUCCESS;
 }
@@ -2315,7 +2365,9 @@ static ACVP_RESULT acvp_build_pbkdf_register_cap(JSON_Object *cap_obj, ACVP_CAPS
     json_object_set_string(cap_obj, "revision", revision);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "capabilities", json_value_init_array());
     temp_cap_arr = json_object_get_array(cap_obj, "capabilities");
@@ -2401,7 +2453,9 @@ static ACVP_RESULT acvp_build_kdf_tls12_register_cap(JSON_Object *cap_obj, ACVP_
     }
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     return ACVP_SUCCESS;
 }
@@ -2424,7 +2478,9 @@ static ACVP_RESULT acvp_build_kdf_tls13_register_cap(JSON_Object *cap_obj, ACVP_
     json_object_set_string(cap_obj, "mode", mode);
 
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     //create the "hmacAlg" array and populate it
     json_object_set_value(cap_obj, "hmacAlg", json_value_init_array());
@@ -2456,7 +2512,7 @@ static ACVP_RESULT acvp_build_kdf_tls13_register_cap(JSON_Object *cap_obj, ACVP_
 }
 
 static ACVP_RESULT acvp_build_dsa_hashalgs(JSON_Object *cap_obj,
-                                           ACVP_DSA_ATTRS *attrs) {
+        ACVP_DSA_ATTRS *attrs) {
     JSON_Array *sha_arr = NULL;
 
     json_object_set_value(cap_obj, "hashAlg", json_value_init_array());
@@ -2495,7 +2551,7 @@ static ACVP_RESULT acvp_build_dsa_hashalgs(JSON_Object *cap_obj,
 }
 
 static ACVP_RESULT acvp_build_dsa_pqggen_register(JSON_Array *meth_array,
-                                                  ACVP_CAPS_LIST *cap_entry) {
+        ACVP_CAPS_LIST *cap_entry) {
     ACVP_DSA_ATTRS *attrs = NULL;
     ACVP_RESULT rv;
     ACVP_DSA_CAP_MODE *dsa_cap_mode = NULL;
@@ -2568,7 +2624,7 @@ static ACVP_RESULT acvp_build_dsa_pqggen_register(JSON_Array *meth_array,
 }
 
 static ACVP_RESULT acvp_build_dsa_pqgver_register(JSON_Array *meth_array,
-                                                  ACVP_CAPS_LIST *cap_entry) {
+        ACVP_CAPS_LIST *cap_entry) {
     ACVP_RESULT result = ACVP_SUCCESS;
     ACVP_DSA_ATTRS *attrs = NULL;
     ACVP_DSA_CAP_MODE *dsa_cap_mode = NULL;
@@ -2640,7 +2696,7 @@ static ACVP_RESULT acvp_build_dsa_pqgver_register(JSON_Array *meth_array,
 }
 
 static ACVP_RESULT acvp_build_dsa_keygen_register(JSON_Array *meth_array,
-                                                  ACVP_CAPS_LIST *cap_entry) {
+        ACVP_CAPS_LIST *cap_entry) {
     ACVP_DSA_CAP_MODE *dsa_cap_mode = NULL;
     ACVP_DSA_ATTRS *attrs = NULL;
     JSON_Value *ln_val = NULL;
@@ -2683,7 +2739,7 @@ static ACVP_RESULT acvp_build_dsa_keygen_register(JSON_Array *meth_array,
 }
 
 static ACVP_RESULT acvp_build_dsa_siggen_register(JSON_Array *meth_array,
-                                                  ACVP_CAPS_LIST *cap_entry) {
+        ACVP_CAPS_LIST *cap_entry) {
     ACVP_DSA_CAP_MODE *dsa_cap_mode = NULL;
     ACVP_RESULT rv;
     ACVP_DSA_ATTRS *attrs = NULL;
@@ -2726,7 +2782,7 @@ static ACVP_RESULT acvp_build_dsa_siggen_register(JSON_Array *meth_array,
 }
 
 static ACVP_RESULT acvp_build_dsa_sigver_register(JSON_Array *meth_array,
-                                                  ACVP_CAPS_LIST *cap_entry) {
+        ACVP_CAPS_LIST *cap_entry) {
     ACVP_DSA_CAP_MODE *dsa_cap_mode = NULL;
     ACVP_RESULT rv;
     ACVP_DSA_ATTRS *attrs = NULL;
@@ -2773,8 +2829,8 @@ static ACVP_RESULT acvp_build_dsa_sigver_register(JSON_Array *meth_array,
 }
 
 static ACVP_RESULT acvp_build_dsa_register_cap(JSON_Object *cap_obj,
-                                               ACVP_CAPS_LIST *cap_entry,
-                                               ACVP_DSA_MODE mode) {
+        ACVP_CAPS_LIST *cap_entry,
+        ACVP_DSA_MODE mode) {
     ACVP_RESULT result;
     JSON_Array *meth_array = NULL;
     const char *revision = NULL;
@@ -2808,7 +2864,9 @@ static ACVP_RESULT acvp_build_dsa_register_cap(JSON_Object *cap_obj,
         return ACVP_INVALID_ARG;
     }
     result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (result != ACVP_SUCCESS) { return result; }
+    if (result != ACVP_SUCCESS) {
+        return result;
+    }
 
     json_object_set_value(cap_obj, "capabilities", json_value_init_array());
     meth_array = json_object_get_array(cap_obj, "capabilities");
@@ -2817,31 +2875,41 @@ static ACVP_RESULT acvp_build_dsa_register_cap(JSON_Object *cap_obj,
     case ACVP_DSA_MODE_PQGGEN:
         if (cap_entry->cap.dsa_cap->dsa_cap_mode[mode - 1].defined) {
             result = acvp_build_dsa_pqggen_register(meth_array, cap_entry);
-            if (result != ACVP_SUCCESS) { return result; }
+            if (result != ACVP_SUCCESS) {
+                return result;
+            }
         }
         break;
     case ACVP_DSA_MODE_PQGVER:
         if (cap_entry->cap.dsa_cap->dsa_cap_mode[mode - 1].defined) {
             result = acvp_build_dsa_pqgver_register(meth_array, cap_entry);
-            if (result != ACVP_SUCCESS) { return result; }
+            if (result != ACVP_SUCCESS) {
+                return result;
+            }
         }
         break;
     case ACVP_DSA_MODE_KEYGEN:
         if (cap_entry->cap.dsa_cap->dsa_cap_mode[mode - 1].defined) {
             result = acvp_build_dsa_keygen_register(meth_array, cap_entry);
-            if (result != ACVP_SUCCESS) { return result; }
+            if (result != ACVP_SUCCESS) {
+                return result;
+            }
         }
         break;
     case ACVP_DSA_MODE_SIGGEN:
         if (cap_entry->cap.dsa_cap->dsa_cap_mode[mode - 1].defined) {
             result = acvp_build_dsa_siggen_register(meth_array, cap_entry);
-            if (result != ACVP_SUCCESS) { return result; }
+            if (result != ACVP_SUCCESS) {
+                return result;
+            }
         }
         break;
     case ACVP_DSA_MODE_SIGVER:
         if (cap_entry->cap.dsa_cap->dsa_cap_mode[mode - 1].defined) {
             result = acvp_build_dsa_sigver_register(meth_array, cap_entry);
-            if (result != ACVP_SUCCESS) { return result; }
+            if (result != ACVP_SUCCESS) {
+                return result;
+            }
         }
         break;
     default:
@@ -2851,14 +2919,16 @@ static ACVP_RESULT acvp_build_dsa_register_cap(JSON_Object *cap_obj,
 }
 
 static ACVP_RESULT acvp_lookup_kas_ecc_prereqVals(JSON_Object *cap_obj,
-                                                  ACVP_KAS_ECC_CAP_MODE *kas_ecc_mode) {
+        ACVP_KAS_ECC_CAP_MODE *kas_ecc_mode) {
     JSON_Array *prereq_array = NULL;
     ACVP_PREREQ_LIST *prereq_vals, *next_pre_req;
     ACVP_PREREQ_ALG_VAL *pre_req;
     const char *alg_str;
     int i;
 
-    if (!kas_ecc_mode) { return ACVP_INVALID_ARG; }
+    if (!kas_ecc_mode) {
+        return ACVP_INVALID_ARG;
+    }
 
     /*
      * Init json array
@@ -2899,9 +2969,9 @@ static ACVP_RESULT acvp_lookup_kas_ecc_prereqVals(JSON_Object *cap_obj,
 }
 
 static ACVP_RESULT acvp_build_kas_ecc_register_cap(ACVP_CTX *ctx,
-                                                   JSON_Object *cap_obj,
-                                                   ACVP_CAPS_LIST *cap_entry,
-                                                   int i) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry,
+        int i) {
     JSON_Array *temp_arr = NULL;
     ACVP_RESULT result;
     ACVP_KAS_ECC_CAP_MODE *kas_ecc_mode;
@@ -2960,7 +3030,9 @@ static ACVP_RESULT acvp_build_kas_ecc_register_cap(ACVP_CTX *ctx,
             break;
         }
         result = acvp_lookup_kas_ecc_prereqVals(cap_obj, kas_ecc_mode);
-        if (result != ACVP_SUCCESS) { return result; }
+        if (result != ACVP_SUCCESS) {
+            return result;
+        }
         switch (i) {
         case ACVP_KAS_ECC_MODE_CDH:
             if (kas_ecc_mode->function) {
@@ -3015,7 +3087,7 @@ static ACVP_RESULT acvp_build_kas_ecc_register_cap(ACVP_CTX *ctx,
                 current_curve = current_curve->next;
             }
             break;
-       /* SP800-56Ar3 does not use a mode, so it is identified with NONE */
+        /* SP800-56Ar3 does not use a mode, so it is identified with NONE */
         case ACVP_KAS_ECC_MODE_NONE:
             sch_val = json_value_init_object();
             sch_obj = json_value_get_object(sch_val);
@@ -3086,42 +3158,42 @@ static ACVP_RESULT acvp_build_kas_ecc_register_cap(ACVP_CTX *ctx,
                 current_curve = current_curve->next;
             }
             switch (kas_ecc_mode->hash) {
-                case ACVP_SHA224:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-224");
-                    break;
-                case ACVP_SHA256:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-256");
-                    break;
-                case ACVP_SHA384:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-384");
-                    break;
-                case ACVP_SHA512:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512");
-                    break;
-                case ACVP_SHA512_224:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/224");
-                    break;
-                case ACVP_SHA512_256:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/256");
-                    break;
-                case ACVP_SHA3_224:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-224");
-                    break;
-                case ACVP_SHA3_256:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-256");
-                    break;
-                case ACVP_SHA3_384:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-384");
-                    break;
-                case ACVP_SHA3_512:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-512");
-                    break;
-                case ACVP_NO_SHA:
-                    break;
-                default:
-                    ACVP_LOG_ERR("Unsupported KAS-ECC sha param %d", kas_ecc_mode->hash);
-                    return ACVP_INVALID_ARG;
-                    break;
+            case ACVP_SHA224:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-224");
+                break;
+            case ACVP_SHA256:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-256");
+                break;
+            case ACVP_SHA384:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-384");
+                break;
+            case ACVP_SHA512:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512");
+                break;
+            case ACVP_SHA512_224:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/224");
+                break;
+            case ACVP_SHA512_256:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/256");
+                break;
+            case ACVP_SHA3_224:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-224");
+                break;
+            case ACVP_SHA3_256:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-256");
+                break;
+            case ACVP_SHA3_384:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-384");
+                break;
+            case ACVP_SHA3_512:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-512");
+                break;
+            case ACVP_NO_SHA:
+                break;
+            default:
+                ACVP_LOG_ERR("Unsupported KAS-ECC sha param %d", kas_ecc_mode->hash);
+                return ACVP_INVALID_ARG;
+                break;
             }
             break;
         case ACVP_KAS_ECC_MODE_COMPONENT:
@@ -3295,14 +3367,16 @@ static ACVP_RESULT acvp_build_kas_ecc_register_cap(ACVP_CTX *ctx,
 }
 
 static ACVP_RESULT acvp_lookup_kas_ffc_prereqVals(JSON_Object *cap_obj,
-                                                  ACVP_KAS_FFC_CAP_MODE *kas_ffc_mode) {
+        ACVP_KAS_FFC_CAP_MODE *kas_ffc_mode) {
     JSON_Array *prereq_array = NULL;
     ACVP_PREREQ_LIST *prereq_vals, *next_pre_req;
     ACVP_PREREQ_ALG_VAL *pre_req;
     const char *alg_str;
     int i;
 
-    if (!kas_ffc_mode) { return ACVP_INVALID_ARG; }
+    if (!kas_ffc_mode) {
+        return ACVP_INVALID_ARG;
+    }
 
     /*
      * Init json array
@@ -3343,9 +3417,9 @@ static ACVP_RESULT acvp_lookup_kas_ffc_prereqVals(JSON_Object *cap_obj,
 }
 
 static ACVP_RESULT acvp_build_kas_ffc_register_cap(ACVP_CTX *ctx,
-                                                   JSON_Object *cap_obj,
-                                                   ACVP_CAPS_LIST *cap_entry,
-                                                   int i) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry,
+        int i) {
     JSON_Array *temp_arr = NULL;
     ACVP_RESULT result;
     ACVP_KAS_FFC_CAP_MODE *kas_ffc_mode;
@@ -3396,7 +3470,9 @@ static ACVP_RESULT acvp_build_kas_ffc_register_cap(ACVP_CTX *ctx,
             break;
         }
         result = acvp_lookup_kas_ffc_prereqVals(cap_obj, kas_ffc_mode);
-        if (result != ACVP_SUCCESS) { return result; }
+        if (result != ACVP_SUCCESS) {
+            return result;
+        }
         switch (i) {
         case ACVP_KAS_FFC_MODE_COMPONENT:
             json_object_set_value(cap_obj, "function", json_value_init_array());
@@ -3602,90 +3678,90 @@ static ACVP_RESULT acvp_build_kas_ffc_register_cap(ACVP_CTX *ctx,
             json_object_set_value(cap_obj, "scheme", sch_val);
 
             switch (kas_ffc_mode->hash) {
-                case ACVP_SHA224:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-224");
-                    break;
-                case ACVP_SHA256:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-256");
-                    break;
-                case ACVP_SHA384:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-384");
-                    break;
-                case ACVP_SHA512:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512");
-                    break;
-                case ACVP_SHA512_224:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/224");
-                    break;
-                case ACVP_SHA512_256:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/256");
-                    break;
-                case ACVP_SHA3_224:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-224");
-                    break;
-                case ACVP_SHA3_256:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-256");
-                    break;
-                case ACVP_SHA3_384:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-384");
-                    break;
-                case ACVP_SHA3_512:
-                    json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-512");
-                    break;
-                case ACVP_NO_SHA:
-                    break;
-                default:
-                    ACVP_LOG_ERR("Unsupported KAS-FFC sha param %d", kas_ffc_mode->hash);
-                    return ACVP_INVALID_ARG;
-                    break;
+            case ACVP_SHA224:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-224");
+                break;
+            case ACVP_SHA256:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-256");
+                break;
+            case ACVP_SHA384:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-384");
+                break;
+            case ACVP_SHA512:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512");
+                break;
+            case ACVP_SHA512_224:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/224");
+                break;
+            case ACVP_SHA512_256:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/256");
+                break;
+            case ACVP_SHA3_224:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-224");
+                break;
+            case ACVP_SHA3_256:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-256");
+                break;
+            case ACVP_SHA3_384:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-384");
+                break;
+            case ACVP_SHA3_512:
+                json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-512");
+                break;
+            case ACVP_NO_SHA:
+                break;
+            default:
+                ACVP_LOG_ERR("Unsupported KAS-FFC sha param %d", kas_ffc_mode->hash);
+                return ACVP_INVALID_ARG;
+                break;
             }
             genmeth = kas_ffc_mode->genmeth;
             json_object_set_value(cap_obj, "domainParameterGenerationMethods", json_value_init_array());
             temp_arr = json_object_get_array(cap_obj, "domainParameterGenerationMethods");
             while (genmeth) {
                 switch (genmeth->param) {
-                    case ACVP_KAS_FFC_FB:
-                        json_array_append_string(temp_arr, "FB");
-                        break;
-                    case ACVP_KAS_FFC_FC:
-                        json_array_append_string(temp_arr, "FC");
-                        break;
-                    case ACVP_KAS_FFC_MODP2048:
-                        json_array_append_string(temp_arr, "modp-2048");
-                        break;
-                    case ACVP_KAS_FFC_MODP3072:
-                        json_array_append_string(temp_arr, "modp-3072");
-                        break;
-                    case ACVP_KAS_FFC_MODP4096:
-                        json_array_append_string(temp_arr, "modp-4096");
-                        break;
-                    case ACVP_KAS_FFC_MODP6144:
-                        json_array_append_string(temp_arr, "modp-6144");
-                        break;
-                    case ACVP_KAS_FFC_MODP8192:
-                        json_array_append_string(temp_arr, "modp-8192");
-                        break;
-                    case ACVP_KAS_FFC_FFDHE2048:
-                        json_array_append_string(temp_arr, "ffdhe2048");
-                        break;
-                    case ACVP_KAS_FFC_FFDHE3072:
-                        json_array_append_string(temp_arr, "ffdhe3072");
-                        break;
-                    case ACVP_KAS_FFC_FFDHE4096:
-                        json_array_append_string(temp_arr, "ffdhe4096");
-                        break;
-                    case ACVP_KAS_FFC_FFDHE6144:
-                        json_array_append_string(temp_arr, "ffdhe6144");
-                        break;
-                    case ACVP_KAS_FFC_FFDHE8192:
-                        json_array_append_string(temp_arr, "ffdhe8192");
-                        break;
+                case ACVP_KAS_FFC_FB:
+                    json_array_append_string(temp_arr, "FB");
+                    break;
+                case ACVP_KAS_FFC_FC:
+                    json_array_append_string(temp_arr, "FC");
+                    break;
+                case ACVP_KAS_FFC_MODP2048:
+                    json_array_append_string(temp_arr, "modp-2048");
+                    break;
+                case ACVP_KAS_FFC_MODP3072:
+                    json_array_append_string(temp_arr, "modp-3072");
+                    break;
+                case ACVP_KAS_FFC_MODP4096:
+                    json_array_append_string(temp_arr, "modp-4096");
+                    break;
+                case ACVP_KAS_FFC_MODP6144:
+                    json_array_append_string(temp_arr, "modp-6144");
+                    break;
+                case ACVP_KAS_FFC_MODP8192:
+                    json_array_append_string(temp_arr, "modp-8192");
+                    break;
+                case ACVP_KAS_FFC_FFDHE2048:
+                    json_array_append_string(temp_arr, "ffdhe2048");
+                    break;
+                case ACVP_KAS_FFC_FFDHE3072:
+                    json_array_append_string(temp_arr, "ffdhe3072");
+                    break;
+                case ACVP_KAS_FFC_FFDHE4096:
+                    json_array_append_string(temp_arr, "ffdhe4096");
+                    break;
+                case ACVP_KAS_FFC_FFDHE6144:
+                    json_array_append_string(temp_arr, "ffdhe6144");
+                    break;
+                case ACVP_KAS_FFC_FFDHE8192:
+                    json_array_append_string(temp_arr, "ffdhe8192");
+                    break;
 
-                    default:
-                        ACVP_LOG_ERR("Unsupported KAS-FFC sha param %d", genmeth->param);
-                        return ACVP_INVALID_ARG;
+                default:
+                    ACVP_LOG_ERR("Unsupported KAS-FFC sha param %d", genmeth->param);
+                    return ACVP_INVALID_ARG;
 
-                        break;
+                    break;
                 }
                 genmeth = genmeth->next;
             }
@@ -3704,8 +3780,8 @@ static ACVP_RESULT acvp_build_kas_ffc_register_cap(ACVP_CTX *ctx,
 }
 
 static ACVP_RESULT acvp_build_kas_ifc_register_cap(ACVP_CTX *ctx,
-                                                   JSON_Object *cap_obj,
-                                                   ACVP_CAPS_LIST *cap_entry) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry) {
     JSON_Array *temp_arr = NULL;
     ACVP_RESULT result;
     const char *revision = NULL;
@@ -3729,45 +3805,47 @@ static ACVP_RESULT acvp_build_kas_ifc_register_cap(ACVP_CTX *ctx,
         if (revision == NULL) return ACVP_INVALID_ARG;
         json_object_set_string(cap_obj, "revision", revision);
         result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-        if (result != ACVP_SUCCESS) { return result; }
+        if (result != ACVP_SUCCESS) {
+            return result;
+        }
     }
     switch (kas_ifc_cap->hash) {
-        case ACVP_SHA224:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-224");
-            break;
-        case ACVP_SHA256:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-256");
-            break;
-        case ACVP_SHA384:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-384");
-            break;
-        case ACVP_SHA512:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512");
-            break;
-        case ACVP_SHA512_224:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/224");
-            break;
-        case ACVP_SHA512_256:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/256");
-            break;
-        case ACVP_SHA3_224:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-224");
-            break;
-        case ACVP_SHA3_256:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-256");
-            break;
-        case ACVP_SHA3_384:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-384");
-            break;
-        case ACVP_SHA3_512:
-            json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-512");
-            break;
-        case ACVP_NO_SHA:
-            break;
-        default:
-            ACVP_LOG_ERR("Unsupported KAS-IFC sha param %d", kas_ifc_cap->hash);
-            return ACVP_INVALID_ARG;
-            break;
+    case ACVP_SHA224:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-224");
+        break;
+    case ACVP_SHA256:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-256");
+        break;
+    case ACVP_SHA384:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-384");
+        break;
+    case ACVP_SHA512:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512");
+        break;
+    case ACVP_SHA512_224:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/224");
+        break;
+    case ACVP_SHA512_256:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA2-512/256");
+        break;
+    case ACVP_SHA3_224:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-224");
+        break;
+    case ACVP_SHA3_256:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-256");
+        break;
+    case ACVP_SHA3_384:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-384");
+        break;
+    case ACVP_SHA3_512:
+        json_object_set_string(cap_obj, "hashFunctionZ", "SHA3-512");
+        break;
+    case ACVP_NO_SHA:
+        break;
+    default:
+        ACVP_LOG_ERR("Unsupported KAS-IFC sha param %d", kas_ifc_cap->hash);
+        return ACVP_INVALID_ARG;
+        break;
     }
     json_object_set_string(cap_obj, "fixedPubExp", (const char *)kas_ifc_cap->fixed_pub_exp);
 
@@ -3785,28 +3863,28 @@ static ACVP_RESULT acvp_build_kas_ifc_register_cap(ACVP_CTX *ctx,
     while (current_param) {
         switch (current_param->param)
         {
-            case ACVP_KAS_IFC_RSAKPG1_BASIC:
-                json_array_append_string(temp_arr, "rsakpg1-basic");
-                break;
-            case ACVP_KAS_IFC_RSAKPG1_PRIME_FACTOR:
-                json_array_append_string(temp_arr, "rsakpg1-prime-factor");
-                break;
-            case ACVP_KAS_IFC_RSAKPG1_CRT:
-                json_array_append_string(temp_arr, "rsakpg1-crt");
-                break;
-            case ACVP_KAS_IFC_RSAKPG2_BASIC:
-                json_array_append_string(temp_arr, "rsakpg2-basic");
-                break;
-            case ACVP_KAS_IFC_RSAKPG2_PRIME_FACTOR:
-                json_array_append_string(temp_arr, "rsakpg2-prime-factor");
-                break;
-            case ACVP_KAS_IFC_RSAKPG2_CRT:
-                json_array_append_string(temp_arr, "rsakpg2-crt");
-                break;
-            default:
-                ACVP_LOG_ERR("Unsupported KAS-IFC keygen param %d", current_param->param);
-                return ACVP_INVALID_ARG;
-                break;
+        case ACVP_KAS_IFC_RSAKPG1_BASIC:
+            json_array_append_string(temp_arr, "rsakpg1-basic");
+            break;
+        case ACVP_KAS_IFC_RSAKPG1_PRIME_FACTOR:
+            json_array_append_string(temp_arr, "rsakpg1-prime-factor");
+            break;
+        case ACVP_KAS_IFC_RSAKPG1_CRT:
+            json_array_append_string(temp_arr, "rsakpg1-crt");
+            break;
+        case ACVP_KAS_IFC_RSAKPG2_BASIC:
+            json_array_append_string(temp_arr, "rsakpg2-basic");
+            break;
+        case ACVP_KAS_IFC_RSAKPG2_PRIME_FACTOR:
+            json_array_append_string(temp_arr, "rsakpg2-prime-factor");
+            break;
+        case ACVP_KAS_IFC_RSAKPG2_CRT:
+            json_array_append_string(temp_arr, "rsakpg2-crt");
+            break;
+        default:
+            ACVP_LOG_ERR("Unsupported KAS-IFC keygen param %d", current_param->param);
+            return ACVP_INVALID_ARG;
+            break;
         }
         current_param = current_param->next;
     }
@@ -3823,16 +3901,16 @@ static ACVP_RESULT acvp_build_kas_ifc_register_cap(ACVP_CTX *ctx,
         while (current_param) {
             switch (current_param->param)
             {
-                case ACVP_KAS_IFC_INITIATOR:
-                    json_array_append_string(temp_arr, "initiator");
-                    break;
-                case ACVP_KAS_IFC_RESPONDER:
-                    json_array_append_string(temp_arr, "responder");
-                    break;
-                default:
-                    ACVP_LOG_ERR("Unsupported KAS-IFC KAS1 role param %d", current_param->param);
-                    return ACVP_INVALID_ARG;
-                    break;
+            case ACVP_KAS_IFC_INITIATOR:
+                json_array_append_string(temp_arr, "initiator");
+                break;
+            case ACVP_KAS_IFC_RESPONDER:
+                json_array_append_string(temp_arr, "responder");
+                break;
+            default:
+                ACVP_LOG_ERR("Unsupported KAS-IFC KAS1 role param %d", current_param->param);
+                return ACVP_INVALID_ARG;
+                break;
             }
             current_param = current_param->next;
         }
@@ -3849,20 +3927,20 @@ static ACVP_RESULT acvp_build_kas_ifc_register_cap(ACVP_CTX *ctx,
         while (current_param) {
             switch (current_param->param)
             {
-                case ACVP_KAS_IFC_INITIATOR:
-                    json_array_append_string(temp_arr, "initiator");
-                    break;
-                case ACVP_KAS_IFC_RESPONDER:
-                    json_array_append_string(temp_arr, "responder");
-                    break;
-                default:
-                    ACVP_LOG_ERR("Unsupported KAS-IFC KAS2 role param %d", current_param->param);
-                    return ACVP_INVALID_ARG;
-                    break;
+            case ACVP_KAS_IFC_INITIATOR:
+                json_array_append_string(temp_arr, "initiator");
+                break;
+            case ACVP_KAS_IFC_RESPONDER:
+                json_array_append_string(temp_arr, "responder");
+                break;
+            default:
+                ACVP_LOG_ERR("Unsupported KAS-IFC KAS2 role param %d", current_param->param);
+                return ACVP_INVALID_ARG;
+                break;
             }
             current_param = current_param->next;
         }
-    }    
+    }
     if (kas_ifc_cap->kas2_roles) {
         json_object_set_value(sch_obj, "KAS2", role_val);
     }
@@ -3872,8 +3950,8 @@ static ACVP_RESULT acvp_build_kas_ifc_register_cap(ACVP_CTX *ctx,
 }
 
 static ACVP_RESULT acvp_build_kda_onestep_register_cap(ACVP_CTX *ctx,
-                                                           JSON_Object *cap_obj,
-                                                           ACVP_CAPS_LIST *cap_entry) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry) {
     ACVP_RESULT rv = ACVP_SUCCESS;
     JSON_Array *temp_arr = NULL, *temp_arr2 = NULL;
     JSON_Value *tmp_val = NULL;
@@ -3911,7 +3989,9 @@ static ACVP_RESULT acvp_build_kda_onestep_register_cap(ACVP_CTX *ctx,
     json_object_set_string(cap_obj, "revision", revision);
 
     rv = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (rv != ACVP_SUCCESS) { goto err; }
+    if (rv != ACVP_SUCCESS) {
+        goto err;
+    }
 
     //pattern string is list of pattern values separated by '||'
     tmp_param_list = cap_entry->cap.kda_onestep_cap->patterns;
@@ -3979,7 +4059,7 @@ static ACVP_RESULT acvp_build_kda_onestep_register_cap(ACVP_CTX *ctx,
         }
 
         if (tmp_param_list->next) {
-            strncat_s(pattern_str, ACVP_KDA_PATTERN_REG_STR_MAX + 1, "||", 2); 
+            strncat_s(pattern_str, ACVP_KDA_PATTERN_REG_STR_MAX + 1, "||", 2);
         }
         tmp_param_list = tmp_param_list->next;
     }
@@ -4039,8 +4119,8 @@ err:
 }
 
 static ACVP_RESULT acvp_build_kda_twostep_register_cap(ACVP_CTX *ctx,
-                                                   JSON_Object *cap_obj,
-                                                   ACVP_CAPS_LIST *cap_entry) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry) {
     ACVP_RESULT rv = ACVP_SUCCESS;
     JSON_Value *common_val = NULL;
     JSON_Object *common_obj = NULL;
@@ -4090,7 +4170,9 @@ static ACVP_RESULT acvp_build_kda_twostep_register_cap(ACVP_CTX *ctx,
     json_object_set_string(cap_obj, "revision", revision);
 
     rv= acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (rv != ACVP_SUCCESS) { goto err; }
+    if (rv != ACVP_SUCCESS) {
+        goto err;
+    }
 
     //append the "l" value
     json_object_set_number(cap_obj, "l", cap->l);
@@ -4208,7 +4290,7 @@ static ACVP_RESULT acvp_build_kda_twostep_register_cap(ACVP_CTX *ctx,
         }
 
         if (tmp_param_list->next) {
-            strncat_s(pattern_str, ACVP_KDA_PATTERN_REG_STR_MAX + 1, "||", 2); 
+            strncat_s(pattern_str, ACVP_KDA_PATTERN_REG_STR_MAX + 1, "||", 2);
         }
         tmp_param_list = tmp_param_list->next;
     }
@@ -4272,8 +4354,8 @@ err:
 }
 
 static ACVP_RESULT acvp_build_kda_hkdf_register_cap(ACVP_CTX *ctx,
-                                                   JSON_Object *cap_obj,
-                                                   ACVP_CAPS_LIST *cap_entry) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry) {
     ACVP_RESULT rv = ACVP_SUCCESS;
     JSON_Array *temp_arr = NULL;
     JSON_Value *tmp_val = NULL;
@@ -4313,7 +4395,9 @@ static ACVP_RESULT acvp_build_kda_hkdf_register_cap(ACVP_CTX *ctx,
     json_object_set_string(cap_obj, "revision", revision);
 
     rv = acvp_lookup_prereqVals(cap_obj, cap_entry);
-    if (rv != ACVP_SUCCESS) { goto err; }
+    if (rv != ACVP_SUCCESS) {
+        goto err;
+    }
 
     //pattern string is list of pattern values separated by '||'
     tmp_param_list = cap->patterns;
@@ -4381,7 +4465,7 @@ static ACVP_RESULT acvp_build_kda_hkdf_register_cap(ACVP_CTX *ctx,
         }
 
         if (tmp_param_list->next) {
-            strncat_s(pattern_str, ACVP_KDA_PATTERN_REG_STR_MAX + 1, "||", 2); 
+            strncat_s(pattern_str, ACVP_KDA_PATTERN_REG_STR_MAX + 1, "||", 2);
         }
         tmp_param_list = tmp_param_list->next;
     }
@@ -4472,8 +4556,8 @@ err:
 }
 
 static ACVP_RESULT acvp_build_kts_ifc_register_cap(ACVP_CTX *ctx,
-                                                   JSON_Object *cap_obj,
-                                                   ACVP_CAPS_LIST *cap_entry) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry) {
     JSON_Array *temp_arr = NULL;
     ACVP_RESULT result;
     const char *revision = NULL, *hash = NULL;
@@ -4500,7 +4584,9 @@ static ACVP_RESULT acvp_build_kts_ifc_register_cap(ACVP_CTX *ctx,
         if (revision == NULL) return ACVP_INVALID_ARG;
         json_object_set_string(cap_obj, "revision", revision);
         result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-        if (result != ACVP_SUCCESS) { return result; }
+        if (result != ACVP_SUCCESS) {
+            return result;
+        }
     }
     json_object_set_string(cap_obj, "fixedPubExp", (const char *)kts_ifc_cap->fixed_pub_exp);
     json_object_set_string(cap_obj, "iutId", (const char *)kts_ifc_cap->iut_id);
@@ -4519,28 +4605,28 @@ static ACVP_RESULT acvp_build_kts_ifc_register_cap(ACVP_CTX *ctx,
     while (current_param) {
         switch (current_param->param)
         {
-            case ACVP_KTS_IFC_RSAKPG1_BASIC:
-                json_array_append_string(temp_arr, "rsakpg1-basic");
-                break;
-            case ACVP_KTS_IFC_RSAKPG1_PRIME_FACTOR:
-                json_array_append_string(temp_arr, "rsakpg1-prime-factor");
-                break;
-            case ACVP_KTS_IFC_RSAKPG1_CRT:
-                json_array_append_string(temp_arr, "rsakpg1-crt");
-                break;
-            case ACVP_KTS_IFC_RSAKPG2_BASIC:
-                json_array_append_string(temp_arr, "rsakpg2-basic");
-                break;
-            case ACVP_KTS_IFC_RSAKPG2_PRIME_FACTOR:
-                json_array_append_string(temp_arr, "rsakpg2-prime-factor");
-                break;
-            case ACVP_KTS_IFC_RSAKPG2_CRT:
-                json_array_append_string(temp_arr, "rsakpg2-crt");
-                break;
-            default:
-                ACVP_LOG_ERR("Unsupported KTS-IFC keygen param %d", current_param->param);
-                return ACVP_INVALID_ARG;
-                break;
+        case ACVP_KTS_IFC_RSAKPG1_BASIC:
+            json_array_append_string(temp_arr, "rsakpg1-basic");
+            break;
+        case ACVP_KTS_IFC_RSAKPG1_PRIME_FACTOR:
+            json_array_append_string(temp_arr, "rsakpg1-prime-factor");
+            break;
+        case ACVP_KTS_IFC_RSAKPG1_CRT:
+            json_array_append_string(temp_arr, "rsakpg1-crt");
+            break;
+        case ACVP_KTS_IFC_RSAKPG2_BASIC:
+            json_array_append_string(temp_arr, "rsakpg2-basic");
+            break;
+        case ACVP_KTS_IFC_RSAKPG2_PRIME_FACTOR:
+            json_array_append_string(temp_arr, "rsakpg2-prime-factor");
+            break;
+        case ACVP_KTS_IFC_RSAKPG2_CRT:
+            json_array_append_string(temp_arr, "rsakpg2-crt");
+            break;
+        default:
+            ACVP_LOG_ERR("Unsupported KTS-IFC keygen param %d", current_param->param);
+            return ACVP_INVALID_ARG;
+            break;
         }
         current_param = current_param->next;
     }
@@ -4551,16 +4637,16 @@ static ACVP_RESULT acvp_build_kts_ifc_register_cap(ACVP_CTX *ctx,
     while (current_param) {
         switch (current_param->param)
         {
-            case ACVP_KTS_IFC_KEYPAIR_GEN:
-                json_array_append_string(temp_arr, "keyPairGen");
-                break;
-            case ACVP_KTS_IFC_PARTIAL_VAL:
-                json_array_append_string(temp_arr, "partialVal");
-                break;
-            default:
-                ACVP_LOG_ERR("Unsupported KTS-IFC function param %d", current_param->param);
-                return ACVP_INVALID_ARG;
-                break;
+        case ACVP_KTS_IFC_KEYPAIR_GEN:
+            json_array_append_string(temp_arr, "keyPairGen");
+            break;
+        case ACVP_KTS_IFC_PARTIAL_VAL:
+            json_array_append_string(temp_arr, "partialVal");
+            break;
+        default:
+            ACVP_LOG_ERR("Unsupported KTS-IFC function param %d", current_param->param);
+            return ACVP_INVALID_ARG;
+            break;
         }
         current_param = current_param->next;
     }
@@ -4586,16 +4672,16 @@ static ACVP_RESULT acvp_build_kts_ifc_register_cap(ACVP_CTX *ctx,
             while (current_param) {
                 switch (current_param->param)
                 {
-                    case ACVP_KTS_IFC_INITIATOR:
-                        json_array_append_string(temp_arr, "initiator");
-                        break;
-                    case ACVP_KTS_IFC_RESPONDER:
-                        json_array_append_string(temp_arr, "responder");
-                        break;
-                    default:
-                        ACVP_LOG_ERR("Unsupported KTS-IFC role param %d", current_param->param);
-                        return ACVP_INVALID_ARG;
-                        break;
+                case ACVP_KTS_IFC_INITIATOR:
+                    json_array_append_string(temp_arr, "initiator");
+                    break;
+                case ACVP_KTS_IFC_RESPONDER:
+                    json_array_append_string(temp_arr, "responder");
+                    break;
+                default:
+                    ACVP_LOG_ERR("Unsupported KTS-IFC role param %d", current_param->param);
+                    return ACVP_INVALID_ARG;
+                    break;
                 }
                 current_param = current_param->next;
             }
@@ -4628,7 +4714,7 @@ static ACVP_RESULT acvp_build_kts_ifc_register_cap(ACVP_CTX *ctx,
         json_array_append_string(temp_arr, current_scheme->encodings);
         json_object_set_value(guts_obj, "ktsMethod", meth_val);
         json_object_set_value(sch_obj, "KTS-OAEP-basic", guts_val);
-        
+
         current_scheme = current_scheme->next;
     }
 
@@ -4638,8 +4724,8 @@ static ACVP_RESULT acvp_build_kts_ifc_register_cap(ACVP_CTX *ctx,
 }
 
 static ACVP_RESULT acvp_build_safe_primes_register_cap(ACVP_CTX *ctx,
-                                                       JSON_Object *cap_obj,
-                                                       ACVP_CAPS_LIST *cap_entry) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry) {
     JSON_Array *temp_arr = NULL;
     ACVP_RESULT result;
     const char *revision = NULL;
@@ -4655,7 +4741,9 @@ static ACVP_RESULT acvp_build_safe_primes_register_cap(ACVP_CTX *ctx,
         if (revision == NULL) return ACVP_INVALID_ARG;
         json_object_set_string(cap_obj, "revision", revision);
         result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-        if (result != ACVP_SUCCESS) { return result; }
+        if (result != ACVP_SUCCESS) {
+            return result;
+        }
     }
 
     if (cap_entry->cipher == ACVP_SAFE_PRIMES_KEYGEN) {
@@ -4682,39 +4770,39 @@ static ACVP_RESULT acvp_build_safe_primes_register_cap(ACVP_CTX *ctx,
     if (current_genmeth) {
         while (current_genmeth) {
             switch (current_genmeth->param) {
-                case ACVP_SAFE_PRIMES_MODP2048:
-                    json_array_append_string(temp_arr, "modp-2048");
-                    break;
-                case ACVP_SAFE_PRIMES_MODP3072:
-                    json_array_append_string(temp_arr, "modp-3072");
-                    break;
-                case ACVP_SAFE_PRIMES_MODP4096:
-                    json_array_append_string(temp_arr, "modp-4096");
-                    break;
-                case ACVP_SAFE_PRIMES_MODP6144:
-                    json_array_append_string(temp_arr, "modp-6144");
-                    break;
-                case ACVP_SAFE_PRIMES_MODP8192:
-                    json_array_append_string(temp_arr, "modp-8192");
-                    break;
-                case ACVP_SAFE_PRIMES_FFDHE2048:
-                    json_array_append_string(temp_arr, "ffdhe2048");
-                    break;
-                case ACVP_SAFE_PRIMES_FFDHE3072:
-                    json_array_append_string(temp_arr, "ffdhe3072");
-                    break;
-                case ACVP_SAFE_PRIMES_FFDHE4096:
-                    json_array_append_string(temp_arr, "ffdhe4096");
-                    break;
-                case ACVP_SAFE_PRIMES_FFDHE6144:
-                    json_array_append_string(temp_arr, "ffdhe6144");
-                    break;
-                case ACVP_SAFE_PRIMES_FFDHE8192:
-                    json_array_append_string(temp_arr, "ffdhe8192");
-                    break;
-                default:
-                    ACVP_LOG_ERR("Unsupported SAFE-PRIMES param %d", current_genmeth->param);
-                    return ACVP_INVALID_ARG;
+            case ACVP_SAFE_PRIMES_MODP2048:
+                json_array_append_string(temp_arr, "modp-2048");
+                break;
+            case ACVP_SAFE_PRIMES_MODP3072:
+                json_array_append_string(temp_arr, "modp-3072");
+                break;
+            case ACVP_SAFE_PRIMES_MODP4096:
+                json_array_append_string(temp_arr, "modp-4096");
+                break;
+            case ACVP_SAFE_PRIMES_MODP6144:
+                json_array_append_string(temp_arr, "modp-6144");
+                break;
+            case ACVP_SAFE_PRIMES_MODP8192:
+                json_array_append_string(temp_arr, "modp-8192");
+                break;
+            case ACVP_SAFE_PRIMES_FFDHE2048:
+                json_array_append_string(temp_arr, "ffdhe2048");
+                break;
+            case ACVP_SAFE_PRIMES_FFDHE3072:
+                json_array_append_string(temp_arr, "ffdhe3072");
+                break;
+            case ACVP_SAFE_PRIMES_FFDHE4096:
+                json_array_append_string(temp_arr, "ffdhe4096");
+                break;
+            case ACVP_SAFE_PRIMES_FFDHE6144:
+                json_array_append_string(temp_arr, "ffdhe6144");
+                break;
+            case ACVP_SAFE_PRIMES_FFDHE8192:
+                json_array_append_string(temp_arr, "ffdhe8192");
+                break;
+            default:
+                ACVP_LOG_ERR("Unsupported SAFE-PRIMES param %d", current_genmeth->param);
+                return ACVP_INVALID_ARG;
             }
             current_genmeth = current_genmeth->next;
         }
@@ -4723,8 +4811,8 @@ static ACVP_RESULT acvp_build_safe_primes_register_cap(ACVP_CTX *ctx,
 }
 
 static ACVP_RESULT acvp_build_lms_register_cap(ACVP_CTX *ctx,
-                                               JSON_Object *cap_obj,
-                                               ACVP_CAPS_LIST *cap_entry) {
+        JSON_Object *cap_obj,
+        ACVP_CAPS_LIST *cap_entry) {
     JSON_Array *temp_arr = NULL;
     JSON_Object *temp_obj = NULL;
     JSON_Value *temp_val = NULL;
@@ -4747,12 +4835,16 @@ static ACVP_RESULT acvp_build_lms_register_cap(ACVP_CTX *ctx,
     json_object_set_string(cap_obj, "mode", mode);
 
     revision = acvp_lookup_cipher_revision(cap_entry->cipher);
-    if (revision == NULL) { return ACVP_INVALID_ARG; }
+    if (revision == NULL) {
+        return ACVP_INVALID_ARG;
+    }
     json_object_set_string(cap_obj, "revision", revision);
 
     if (cap_entry->prereq_vals) {
         result = acvp_lookup_prereqVals(cap_obj, cap_entry);
-        if (result != ACVP_SUCCESS) { return result; }
+        if (result != ACVP_SUCCESS) {
+            return result;
+        }
     }
 
     alg = acvp_get_lms_alg(cap_entry->cipher);
@@ -4786,7 +4878,9 @@ static ACVP_RESULT acvp_build_lms_register_cap(ACVP_CTX *ctx,
         list = lms_cap->lms_modes;
         while (list) {
             lms_str = acvp_lookup_lms_mode_str(list->param);
-            if (!lms_str) { goto err; }
+            if (!lms_str) {
+                goto err;
+            }
             json_array_append_string(temp_arr, lms_str);
             list = list->next;
         }
@@ -4798,7 +4892,9 @@ static ACVP_RESULT acvp_build_lms_register_cap(ACVP_CTX *ctx,
         list = lms_cap->lmots_modes;
         while (list) {
             lms_str = acvp_lookup_lmots_mode_str(list->param);
-            if (!lms_str) { goto err; }
+            if (!lms_str) {
+                goto err;
+            }
             json_array_append_string(temp_arr, lms_str);
             list = list->next;
         }
@@ -5089,13 +5185,13 @@ ACVP_RESULT acvp_build_registration_json(ACVP_CTX *ctx, JSON_Value **reg) {
                         break;
                     }
                     /* Another also enabled? */
-                    if (cap_entry->cap.kdf108_cap->counter_mode.kdf_mode || 
-                        cap_entry->cap.kdf108_cap->feedback_mode.kdf_mode ||
-                        cap_entry->cap.kdf108_cap->dpi_mode.kdf_mode) {
+                    if (cap_entry->cap.kdf108_cap->counter_mode.kdf_mode ||
+                            cap_entry->cap.kdf108_cap->feedback_mode.kdf_mode ||
+                            cap_entry->cap.kdf108_cap->dpi_mode.kdf_mode) {
                         json_array_append_value(caps_arr, cap_val);
                         cap_val = json_value_init_object();
                         cap_obj = json_value_get_object(cap_val);
-                rv = acvp_build_kdf108_register_cap(cap_obj, cap_entry);
+                        rv = acvp_build_kdf108_register_cap(cap_obj, cap_entry);
                     }
                 } else {
                     rv = acvp_build_kdf108_register_cap(cap_obj, cap_entry);
@@ -5278,7 +5374,7 @@ ACVP_RESULT acvp_build_validation(ACVP_CTX *ctx,
         json_object_set_string(oe_obj, "name", oe->name);
 
         if (oe->dependencies.status == ACVP_RESOURCE_STATUS_COMPLETE ||
-            oe->dependencies.status == ACVP_RESOURCE_STATUS_PARTIAL) {
+                oe->dependencies.status == ACVP_RESOURCE_STATUS_PARTIAL) {
             /*
              * There are some "complete" urls to record.
              */
@@ -5297,7 +5393,7 @@ ACVP_RESULT acvp_build_validation(ACVP_CTX *ctx,
         }
 
         if (oe->dependencies.status == ACVP_RESOURCE_STATUS_INCOMPLETE ||
-            oe->dependencies.status == ACVP_RESOURCE_STATUS_PARTIAL) {
+                oe->dependencies.status == ACVP_RESOURCE_STATUS_PARTIAL) {
             /*
              * There are some dependencies that we need to create.
              */

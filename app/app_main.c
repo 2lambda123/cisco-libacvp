@@ -82,8 +82,8 @@ static void setup_session_parameters(void) {
 
     server = getenv("ACV_SERVER");
     if (!server) {
-         server = DEFAULT_SERVER;
-     }
+        server = DEFAULT_SERVER;
+    }
 
     tmp = getenv("ACV_PORT");
     if (tmp) port = atoi(tmp);
@@ -237,7 +237,7 @@ int main(int argc, char **argv) {
     }
 #endif
 
-     setup_session_parameters();
+    setup_session_parameters();
 
     /*
      * We begin the libacvp usage flow here.
@@ -347,29 +347,65 @@ int main(int argc, char **argv) {
          * We need to register all the crypto module capabilities that will be
          * validated. Each has their own method for readability.
          */
-        if (cfg.aes) { if (enable_aes(ctx)) goto end; }
-        if (cfg.tdes) { if (enable_tdes(ctx)) goto end; }
-        if (cfg.hash) { if (enable_hash(ctx)) goto end; }
-        if (cfg.cmac) { if (enable_cmac(ctx)) goto end; }
-        if (cfg.hmac) { if (enable_hmac(ctx)) goto end; }
+        if (cfg.aes) {
+            if (enable_aes(ctx)) goto end;
+        }
+        if (cfg.tdes) {
+            if (enable_tdes(ctx)) goto end;
+        }
+        if (cfg.hash) {
+            if (enable_hash(ctx)) goto end;
+        }
+        if (cfg.cmac) {
+            if (enable_cmac(ctx)) goto end;
+        }
+        if (cfg.hmac) {
+            if (enable_hmac(ctx)) goto end;
+        }
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
-        if (cfg.kmac) { if (enable_kmac(ctx)) goto end; }
-        if (cfg.kdf) { if (enable_kdf(ctx)) goto end; }
-        if (cfg.rsa) { if (enable_rsa(ctx)) goto end; }
-        if (cfg.ecdsa) { if (enable_ecdsa(ctx)) goto end; }
-        if (cfg.drbg) { if (enable_drbg(ctx)) goto end; }
-        if (cfg.kas_ecc) { if (enable_kas_ecc(ctx)) goto end; }
-        if (cfg.kas_ifc) { if (enable_kas_ifc(ctx)) goto end; }
-        if (cfg.kts_ifc) { if (enable_kts_ifc(ctx)) goto end; }
-        if (cfg.kda) { if (enable_kda(ctx)) goto end; }
+        if (cfg.kmac) {
+            if (enable_kmac(ctx)) goto end;
+        }
+        if (cfg.kdf) {
+            if (enable_kdf(ctx)) goto end;
+        }
+        if (cfg.rsa) {
+            if (enable_rsa(ctx)) goto end;
+        }
+        if (cfg.ecdsa) {
+            if (enable_ecdsa(ctx)) goto end;
+        }
+        if (cfg.drbg) {
+            if (enable_drbg(ctx)) goto end;
+        }
+        if (cfg.kas_ecc) {
+            if (enable_kas_ecc(ctx)) goto end;
+        }
+        if (cfg.kas_ifc) {
+            if (enable_kas_ifc(ctx)) goto end;
+        }
+        if (cfg.kts_ifc) {
+            if (enable_kts_ifc(ctx)) goto end;
+        }
+        if (cfg.kda) {
+            if (enable_kda(ctx)) goto end;
+        }
 #ifndef OPENSSL_NO_DSA
-        if (cfg.dsa) { if (enable_dsa(ctx)) goto end; }
-        if (cfg.kas_ffc) { if (enable_kas_ffc(ctx)) goto end; }
-        if (cfg.safe_primes) { if (enable_safe_primes(ctx)) goto end; }
+        if (cfg.dsa) {
+            if (enable_dsa(ctx)) goto end;
+        }
+        if (cfg.kas_ffc) {
+            if (enable_kas_ffc(ctx)) goto end;
+        }
+        if (cfg.safe_primes) {
+            if (enable_safe_primes(ctx)) goto end;
+        }
 #endif
 #endif
 #ifdef ACVPAPP_LMS_SUPPORT
-        if (cfg.lms) { if (enable_lms(ctx)) goto end; }
+        if (cfg.lms) {
+            if (enable_lms(ctx)) goto end;
+        }
 #endif
     }
 
@@ -405,14 +441,14 @@ int main(int argc, char **argv) {
     }
 
     if (cfg.vector_req && cfg.vector_rsp) {
-       rv = acvp_run_vectors_from_file(ctx, cfg.vector_req_file, cfg.vector_rsp_file);
-       goto end;
+        rv = acvp_run_vectors_from_file(ctx, cfg.vector_req_file, cfg.vector_rsp_file);
+        goto end;
     }
 
     strncmp_s(DEFAULT_SERVER, DEFAULT_SERVER_LEN, server, DEFAULT_SERVER_LEN, &diff);
     if (!diff) {
-         printf("Warning: No server set, using default. Please define ACV_SERVER in your environment.\n");
-         printf("Run acvp_app --help for more information on this and other environment variables.\n\n");
+        printf("Warning: No server set, using default. Please define ACV_SERVER in your environment.\n");
+        printf("Run acvp_app --help for more information on this and other environment variables.\n\n");
     }
 
     if (cfg.fips_validation) {
@@ -437,25 +473,25 @@ int main(int argc, char **argv) {
     }
 
     if (cfg.vector_upload) {
-       rv = acvp_upload_vectors_from_file(ctx, cfg.vector_upload_file, cfg.fips_validation);
-       goto end;
+        rv = acvp_upload_vectors_from_file(ctx, cfg.vector_upload_file, cfg.fips_validation);
+        goto end;
     }
 
     /* PUT without algorithms submits put_filename for validation using save JWT and testSession ID */
     if (cfg.empty_alg && cfg.put) {
-         rv = acvp_put_data_from_file(ctx, cfg.put_filename);
-         goto end;
+        rv = acvp_put_data_from_file(ctx, cfg.put_filename);
+        goto end;
     }
     /* PUT with alg testing will submit put_filename with module/oe information */
     if (!cfg.empty_alg && cfg.put) {
         acvp_mark_as_put_after_test(ctx, cfg.put_filename);
     }
-    
+
     if (cfg.get_results) {
         rv = acvp_get_results_from_server(ctx, cfg.session_file);
         goto end;
     }
-    
+
     if (cfg.resume_session) {
         rv = acvp_resume_test_session(ctx, cfg.session_file, cfg.fips_validation);
         goto end;
@@ -478,7 +514,7 @@ int main(int argc, char **argv) {
         }
         goto end;
     }
-    
+
     /*
      * Run the test session.
      * Perform a FIPS validation on this test session if specified.
@@ -602,7 +638,7 @@ static int enable_aes(ACVP_CTX *ctx) {
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_sym_cipher_set_domain(ctx, ACVP_AES_CBC_CS1, ACVP_SYM_CIPH_DOMAIN_PTLEN, 128, 512, 8);
     CHECK_ENABLE_CAP_RV(rv);
-    
+
     rv = acvp_cap_sym_cipher_enable(ctx, ACVP_AES_CBC_CS2, &app_aes_handler);
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_sym_cipher_set_parm(ctx, ACVP_AES_CBC_CS2, ACVP_SYM_CIPH_PARM_DIR, ACVP_SYM_CIPH_DIR_BOTH);
@@ -1393,7 +1429,7 @@ static int enable_hmac(ACVP_CTX *ctx) {
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_set_prereq(ctx, ACVP_HMAC_SHA2_512_256, ACVP_PREREQ_SHA, value);
     CHECK_ENABLE_CAP_RV(rv);
-    
+
     rv = acvp_cap_hmac_enable(ctx, ACVP_HMAC_SHA3_224, &app_hmac_handler);
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_hmac_set_domain(ctx, ACVP_HMAC_SHA3_224, ACVP_HMAC_KEYLEN, 8, 524288, 8);
@@ -1402,7 +1438,7 @@ static int enable_hmac(ACVP_CTX *ctx) {
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_set_prereq(ctx, ACVP_HMAC_SHA3_224, ACVP_PREREQ_SHA, value);
     CHECK_ENABLE_CAP_RV(rv);
-    
+
     rv = acvp_cap_hmac_enable(ctx, ACVP_HMAC_SHA3_256, &app_hmac_handler);
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_hmac_set_domain(ctx, ACVP_HMAC_SHA3_256, ACVP_HMAC_KEYLEN, 8, 524288, 8);
@@ -1411,7 +1447,7 @@ static int enable_hmac(ACVP_CTX *ctx) {
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_set_prereq(ctx, ACVP_HMAC_SHA3_256, ACVP_PREREQ_SHA, value);
     CHECK_ENABLE_CAP_RV(rv);
-    
+
     rv = acvp_cap_hmac_enable(ctx, ACVP_HMAC_SHA3_384, &app_hmac_handler);
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_hmac_set_domain(ctx, ACVP_HMAC_SHA3_384, ACVP_HMAC_KEYLEN, 8, 524288, 8);
@@ -1420,7 +1456,7 @@ static int enable_hmac(ACVP_CTX *ctx) {
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_set_prereq(ctx, ACVP_HMAC_SHA3_384, ACVP_PREREQ_SHA, value);
     CHECK_ENABLE_CAP_RV(rv);
-    
+
     rv = acvp_cap_hmac_enable(ctx, ACVP_HMAC_SHA3_512, &app_hmac_handler);
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_hmac_set_domain(ctx, ACVP_HMAC_SHA3_512, ACVP_HMAC_KEYLEN, 8, 524288, 8);
@@ -1700,9 +1736,9 @@ static int enable_kdf(ACVP_CTX *ctx) {
 #if 0
     /* Only valid for OpenSSL 3.1 */
     /* Call sequence is very close to regular kdf108, with no creation of fixed data */
-    #if OPENSSL_VERSION_NUMBER >= 0x30100000L
-	rv = acvp_cap_set_prereq(ctx, ACVP_KDF108, ACVP_PREREQ_KMAC, value);
-	CHECK_ENABLE_CAP_RV(rv);
+#if OPENSSL_VERSION_NUMBER >= 0x30100000L
+    rv = acvp_cap_set_prereq(ctx, ACVP_KDF108, ACVP_PREREQ_KMAC, value);
+    CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_kdf108_set_parm(ctx, ACVP_KDF108_MODE_KMAC, ACVP_KDF108_MAC_MODE, ACVP_KDF108_MAC_MODE_KMAC_128);
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_kdf108_set_parm(ctx, ACVP_KDF108_MODE_KMAC, ACVP_KDF108_MAC_MODE, ACVP_KDF108_MAC_MODE_KMAC_256);
@@ -1715,7 +1751,7 @@ static int enable_kdf(ACVP_CTX *ctx) {
     CHECK_ENABLE_CAP_RV(rv);
     rv = acvp_cap_kdf108_set_domain(ctx, ACVP_KDF108_MODE_KMAC, ACVP_KDF108_LABEL_LEN, 8, 4096, 8);
     CHECK_ENABLE_CAP_RV(rv);
-    #endif
+#endif
 #endif
 
     /* PBKDF */
@@ -2404,7 +2440,7 @@ static int enable_kda(ACVP_CTX *ctx) {
 #endif
 
 end:
-   return rv;
+    return rv;
 }
 #endif
 
@@ -3892,5 +3928,5 @@ end:
     app_cleanup(ctx);
 
     return rv;
-   }
+}
 #endif

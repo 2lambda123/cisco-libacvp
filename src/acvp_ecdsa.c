@@ -89,12 +89,24 @@ err:
  */
 
 static ACVP_RESULT acvp_ecdsa_release_tc(ACVP_ECDSA_TC *stc) {
-    if (stc->qy) { free(stc->qy); }
-    if (stc->qx) { free(stc->qx); }
-    if (stc->d) { free(stc->d); }
-    if (stc->r) { free(stc->r); }
-    if (stc->s) { free(stc->s); }
-    if (stc->message) { free(stc->message); }
+    if (stc->qy) {
+        free(stc->qy);
+    }
+    if (stc->qx) {
+        free(stc->qx);
+    }
+    if (stc->d) {
+        free(stc->d);
+    }
+    if (stc->r) {
+        free(stc->r);
+    }
+    if (stc->s) {
+        free(stc->s);
+    }
+    if (stc->message) {
+        free(stc->message);
+    }
     memzero_s(stc, sizeof(ACVP_ECDSA_TC));
 
     return ACVP_SUCCESS;
@@ -127,17 +139,29 @@ static ACVP_RESULT acvp_ecdsa_init_tc(ACVP_CTX *ctx,
     stc->is_component = is_component;
 
     stc->qx = calloc(ACVP_RSA_EXP_LEN_MAX, sizeof(char));
-    if (!stc->qx) { goto err; }
+    if (!stc->qx) {
+        goto err;
+    }
     stc->qy = calloc(ACVP_RSA_EXP_LEN_MAX, sizeof(char));
-    if (!stc->qy) { goto err; }
+    if (!stc->qy) {
+        goto err;
+    }
     stc->d = calloc(ACVP_RSA_EXP_LEN_MAX, sizeof(char));
-    if (!stc->d) { goto err; }
+    if (!stc->d) {
+        goto err;
+    }
     stc->s = calloc(ACVP_RSA_EXP_LEN_MAX, sizeof(char));
-    if (!stc->s) { goto err; }
+    if (!stc->s) {
+        goto err;
+    }
     stc->r = calloc(ACVP_RSA_EXP_LEN_MAX, sizeof(char));
-    if (!stc->r) { goto err; }
+    if (!stc->r) {
+        goto err;
+    }
     stc->message = calloc(ACVP_RSA_EXP_LEN_MAX, sizeof(char));
-    if (!stc->message) { goto err; }
+    if (!stc->message) {
+        goto err;
+    }
 
     if (cipher == ACVP_ECDSA_KEYVER || cipher == ACVP_ECDSA_SIGVER) {
         if (!qx || !qy) return ACVP_MISSING_ARG;
@@ -324,7 +348,7 @@ static ACVP_RESULT acvp_ecdsa_kat_handler_internal(ACVP_CTX *ctx, JSON_Object *o
         ACVP_EC_CURVE curve = 0;
         ACVP_ECDSA_SECRET_GEN_MODE secret_gen_mode = 0;
         const char *hash_alg_str = NULL, *curve_str = NULL,
-                   *secret_gen_mode_str = NULL;
+                    *secret_gen_mode_str = NULL;
 
         groupval = json_array_get_value(groups, i);
         groupobj = json_value_get_object(groupval);
@@ -422,7 +446,7 @@ static ACVP_RESULT acvp_ecdsa_kat_handler_internal(ACVP_CTX *ctx, JSON_Object *o
                     goto err;
                 }
                 if (strnlen_s(qx, ACVP_ECDSA_EXP_LEN_MAX + 1) > ACVP_ECDSA_EXP_LEN_MAX ||
-                    strnlen_s(qy, ACVP_ECDSA_EXP_LEN_MAX + 1) > ACVP_ECDSA_EXP_LEN_MAX) {
+                        strnlen_s(qy, ACVP_ECDSA_EXP_LEN_MAX + 1) > ACVP_ECDSA_EXP_LEN_MAX) {
                     ACVP_LOG_ERR("'qx' or 'qy' too long");
                     rv = ACVP_INVALID_ARG;
                     goto err;
@@ -450,7 +474,7 @@ static ACVP_RESULT acvp_ecdsa_kat_handler_internal(ACVP_CTX *ctx, JSON_Object *o
                     goto err;
                 }
                 if (strnlen_s(r, ACVP_ECDSA_EXP_LEN_MAX + 1) > ACVP_ECDSA_EXP_LEN_MAX ||
-                    strnlen_s(s, ACVP_ECDSA_EXP_LEN_MAX + 1) > ACVP_ECDSA_EXP_LEN_MAX) {
+                        strnlen_s(s, ACVP_ECDSA_EXP_LEN_MAX + 1) > ACVP_ECDSA_EXP_LEN_MAX) {
                     ACVP_LOG_ERR("'r' or 's' too long");
                     rv = ACVP_INVALID_ARG;
                     goto err;

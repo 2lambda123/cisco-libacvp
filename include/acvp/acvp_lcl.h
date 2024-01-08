@@ -728,10 +728,10 @@
 /*
  * END PBKDF
  */
- 
- /**
- * Accepted length ranges for TLS 1.2 KDF
- */
+
+/**
+* Accepted length ranges for TLS 1.2 KDF
+*/
 #define ACVP_KDF_TLS12_MSG_MAX 1024 * 4
 
 #define ACVP_KDF_TLS12_PMSECRET_BIT_MAX 384
@@ -879,7 +879,7 @@
 
 #define ACVP_CURL_BUF_MAX       (1024 * 1024 * 64) /**< 64 MB */
 #define ACVP_RETRY_TIME_MIN     5 /* seconds */
-#define ACVP_RETRY_TIME_MAX     300 
+#define ACVP_RETRY_TIME_MAX     300
 #define ACVP_MAX_WAIT_TIME      7200
 #define ACVP_RETRY_TIME         30
 #define ACVP_RETRY_MODIFIER_MAX 10
@@ -892,7 +892,7 @@
 #define ACVP_PATH_SEGMENT_DEFAULT ""
 #define ACVP_JSON_FILENAME_MAX 128
 
-/* 
+/*
  * This should NOT be made longer than ACVP_JSON_FILENAME_MAX - 15
  * (accounting for _ character, ".json", and 9 digits for testSession ID)
  */
@@ -1775,7 +1775,7 @@ struct acvp_ctx_t {
 
     char *http_user_agent;   /* String containing info to be sent with HTTP requests, currently OE info */
     char *session_file_path; /* String containing the path of the testSession file after it is created when applicable */
-    
+
     ACVP_OPERATING_ENV op_env; /**< The Operating Environment resources available */
     ACVP_STRING_LIST *vsid_url_list;
     char *session_url;
@@ -1973,7 +1973,7 @@ const char *acvp_lookup_cipher_name(ACVP_CIPHER alg);
 ACVP_CIPHER acvp_lookup_cipher_index(const char *algorithm);
 
 ACVP_CIPHER acvp_lookup_cipher_w_mode_index(const char *algorithm,
-                                            const char *mode);
+        const char *mode);
 
 const char *acvp_lookup_cipher_mode_str(ACVP_CIPHER cipher);
 
